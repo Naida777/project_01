@@ -38,6 +38,7 @@ time = round(three_songs[0][1]+ three_songs[1][1] + three_songs[2][1])
 print("Три песни звучат:", time, "минут")
 
 
+
 # Пункт A. 
 # Приведем плейлист песен в виде списка списков
 # Список my_favorite_songs содержит список названий и длительности каждого трека
@@ -306,3 +307,53 @@ for Matrix in list:
     print(str(Matrix)+"\n")
   
   
+# Задача 4.1.
+
+import sqlite3
+connection = sqlite3.connect('teatchers.db')
+cursor = connection.cursor()
+sqlquery = """CREATE TABLE Students 
+(Student_Id Int NOT NULL, 
+ Student_Name Text NOT NULL, 
+ School_Id Int NOT NULL Primary key);"""
+cursor.execute(sqlquery)
+connection.commit()
+connection.close()
+
+import sqlite3
+connection = sqlite3.connect('teatchers.db')
+cursor = connection.cursor()
+sqlquery = """INSERT INTO Students (Student_Id, Student_Name, School_Id)
+VALUES 
+(201, 'Иван', 1), 
+(202, 'Петр', 2), 
+(203, 'Анастасия', 3), 
+(204, 'Игорь', 4);"""
+cursor.execute(sqlquery)
+connection.commit()
+connection.close()
+
+import sqlite3
+def get_connection():
+    connection = sqlite3.connect('teatchers.db')
+    return connection
+def close_connection(connection):
+    if connection:
+        connection.close()
+
+def get_student_data(Student_Id):
+    connection = get_connection()
+    cursor = connection.cursor()
+    sqlquery = '''SELECT Students.Student_Id, Students.Student_Name, School.School_Id, School.School_Name 
+    FROM Students 
+    JOIN School ON Students.School_Id = School.School_Id;'''
+    cursor.execute(sqlquery)
+    result = cursor.fetchall()
+    print ("Данные по студенту")
+    for row in result:
+        print ("ID студента: ", row[0])
+        print ("Имя студента: ", row[1])
+        print ("ID школы: ", row[2])
+        print ("Название школы: ", row[3])
+    connection.close()
+get_student_data(201)
